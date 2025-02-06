@@ -17,11 +17,6 @@ namespace FileCabinetApp
         private static FileCabinetService? fileCabinetService;
         private static bool isRunning = true;
 
-        static Program()
-        {
-            fileCabinetService = new FileCabinetService();
-        }
-
         // COMMANDS
         private static readonly Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -45,6 +40,11 @@ namespace FileCabinetApp
             new string[] { "edit", "edits a record", "The 'edit' command edits a record." },
             new string[] { "find", "finds a record", "The 'find' command finds a record." },
         };
+
+        static Program()
+        {
+            fileCabinetService = new FileCabinetService();
+        }
 
         public static void Main(string[] args)
         {
