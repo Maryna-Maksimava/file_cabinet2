@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Entry point of the File Cabinet Application.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Maryna Maksimava";
@@ -17,7 +20,14 @@ namespace FileCabinetApp
         private static FileCabinetService? fileCabinetService;
         private static bool isRunning = true;
 
-        // COMMANDS
+        static Program()
+        {
+            fileCabinetService = new FileCabinetService();
+        }
+
+        /// <summary>
+        /// List of available commands and their actions.
+        /// </summary>
         private static readonly Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
@@ -29,23 +39,24 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
         };
 
-        // MESSAGES
-        private static string[][] helpMessages = new string[][]
+        /// <summary>
+        /// Help messages for available commands.
+        /// </summary>
+        private static readonly string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
-            new string[] { "stat", "does stat", "stat stat stat." },
-            new string[] { "create", "creates new record", "The 'create' command creates new record." },
-            new string[] { "list", "shows records", "The 'list' command shows the list of records." },
-            new string[] { "edit", "edits a record", "The 'edit' command edits a record." },
-            new string[] { "find", "finds a record", "The 'find' command finds a record." },
+            new string[] { "stat", "provides statistics", "The 'stat' command displays record statistics." },
+            new string[] { "create", "creates new record", "The 'create' command creates a new record." },
+            new string[] { "list", "shows records", "The 'list' command displays all records." },
+            new string[] { "edit", "edits a record", "The 'edit' command modifies an existing record." },
+            new string[] { "find", "finds a record", "The 'find' command searches for a record." },
         };
 
-        static Program()
-        {
-            fileCabinetService = new FileCabinetService();
-        }
-
+        /// <summary>
+        /// Main entry point of the application.
+        /// </summary>
+        /// <param name="args">Command-line arguments.</param>
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -55,7 +66,7 @@ namespace FileCabinetApp
             {
                 Console.Write("> ");
                 var line = Console.ReadLine();
-                var inputs = line != null ? line.Split(' ', (char)2) : new string[] { string.Empty, string.Empty };
+                var inputs = line?.Split(' ', (char)2) ?? new string[] { string.Empty, string.Empty };
                 const int commandIndex = 0;
                 var command = inputs[commandIndex];
 
@@ -65,12 +76,11 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(commands, i => i.Item1.Equals(command, StringComparison.InvariantCultureIgnoreCase));
                 if (index >= 0)
                 {
                     const int parametersIndex = 1;
-                    //var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
-                    var parameters = inputs.Length > 1  ? string.Join(" ", inputs.Skip(1)) : string.Empty;
+                    var parameters = inputs.Length > 1 ? string.Join(" ", inputs.Skip(1)) : string.Empty;
                     commands[index].Item2(parameters);
                 }
                 else
@@ -81,17 +91,26 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
+
+        /// <summary>
+        /// Displays message when an unknown command is entered.
+        /// </summary>
+        /// <param name="command">The unknown command.</param>
         private static void PrintMissedCommandInfo(string command)
         {
             Console.WriteLine($"There is no '{command}' command.");
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Displays available commands or provides help for a specific command.
+        /// </summary>
+        /// <param name="parameters">Command to get help for.</param>
         private static void PrintHelp(string parameters)
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(helpMessages, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
                 if (index >= 0)
                 {
                     Console.WriteLine(helpMessages[index][Program.ExplanationHelpIndex]);
@@ -104,7 +123,6 @@ namespace FileCabinetApp
             else
             {
                 Console.WriteLine("Available commands:");
-
                 foreach (var helpMessage in helpMessages)
                 {
                     Console.WriteLine("\t{0}\t- {1}", helpMessage[Program.CommandHelpIndex], helpMessage[Program.DescriptionHelpIndex]);
@@ -114,19 +132,26 @@ namespace FileCabinetApp
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Exits the application.
+        /// </summary>
+        /// <param name="parameters">Unused parameter.</param>
         private static void Exit(string parameters)
         {
-            Console.WriteLine("Exiting an application...");
+            Console.WriteLine("Exiting the application...");
             isRunning = false;
         }
 
+        /// <summary>
+        /// Displays statistics about stored records.
+        /// </summary>
+        /// <param name="parameters">Unused parameter.</param>
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
+            var recordsCount = fileCabinetService?.GetStat() ?? 0;
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
-        //--------------------------------------------------------------------------------------------
         private static void Create(string parameters)
         {
             string? fname = string.Empty;
@@ -230,7 +255,6 @@ namespace FileCabinetApp
             Console.WriteLine($"record id = {id}");
         }
 
-        //---------------------------------------------------------------------------------------------------------
 
         private static void List(string parameters)
         {
@@ -247,7 +271,6 @@ namespace FileCabinetApp
                 Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}, Age: {record.Age}, Salary: {record.Salary:C}, Gender: {record.Gender}");
             }
         }
-        //-----------------------------------------------------------------------------------------------------------
         private static void Edit(string parameters)
         {
             // id
