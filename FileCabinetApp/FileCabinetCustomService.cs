@@ -8,34 +8,9 @@ namespace FileCabinetApp
 {
     class FileCabinetCustomService : FileCabinetService
     {
-        protected override void ValidateParameters(RecordParameters parameters)
+        protected override IRecordValidator CreateValidator()
         {
-            if (string.IsNullOrWhiteSpace(parameters.FirstName) ||
-                  parameters.FirstName.Length < 2 ||
-                  parameters.FirstName.Length > 60)
-            {
-                throw new ArgumentException("Invalid first name.");
-            }
-
-            // add check that name starts from upercase letter
-            if (!char.IsUpper(parameters.FirstName[0]))
-            {
-                throw new ArgumentException("Name must start with uppercase letter");
-            }
-
-            if (string.IsNullOrWhiteSpace(parameters.LastName) ||
-                parameters.LastName.Length < 2 ||
-                parameters.LastName.Length > 60)
-            {
-                throw new ArgumentException("Invalid last name.");
-            }
-
-            // allow older age
-            if (parameters.DateOfBirth < new DateTime(1900, 1, 1) ||
-                parameters.DateOfBirth > DateTime.Now)
-            {
-                throw new ArgumentException("Invalid date of birth.");
-            }
+            return new CustomValidator();
         }
     }
 }
