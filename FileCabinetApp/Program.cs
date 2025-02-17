@@ -298,7 +298,7 @@ namespace FileCabinetApp
         {
             var records = fileCabinetService.GetRecords();
 
-            if (records.Length == 0)
+            if (records.Count == 0)
             {
                 Console.WriteLine("No records found.");
                 return;

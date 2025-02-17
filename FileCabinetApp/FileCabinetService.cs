@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+
 
 namespace FileCabinetApp
 {
@@ -61,9 +63,10 @@ namespace FileCabinetApp
             return record.Id;
         }
 
-        public FileCabinetRecord[] GetRecords()
+        // Modify all methods that return arrays
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return this.list.ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
         }
 
         public int GetStat()
@@ -71,9 +74,9 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
-        public static void PrintRecords(FileCabinetRecord[] records)
+        public static void PrintRecords(ReadOnlyCollection<FileCabinetRecord> records)
         {
-            if (records.Length == 0)
+            if (records.Count == 0)
             {
                 Console.WriteLine("No records found.");
             }
@@ -121,25 +124,25 @@ namespace FileCabinetApp
             this.dateOfBirthDictionary[parameters.DateOfBirth].Add(record);
         }
 
-        public FileCabinetRecord[] FindByFirstName(string firstName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             return this.firstNameDictionary.TryGetValue(firstName.ToLower(), out var records)
-                ? records.ToArray()
-                : Array.Empty<FileCabinetRecord>();
+                ? new ReadOnlyCollection<FileCabinetRecord>(records)
+                : new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
         }
 
-        public FileCabinetRecord[] FindByLastName(string lastName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             return this.lastNameDictionary.TryGetValue(lastName.ToLower(), out var records)
-                ? records.ToArray()
-                : Array.Empty<FileCabinetRecord>();
+                ? new ReadOnlyCollection<FileCabinetRecord>(records)
+                : new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
         }
 
-        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
+        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             return this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out var records)
-                ? records.ToArray()
-                : Array.Empty<FileCabinetRecord>();
+                ? new ReadOnlyCollection<FileCabinetRecord>(records)
+                : new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
         }
     }
 }
