@@ -61,6 +61,33 @@ namespace FileCabinetApp
         /// <param name="args">Command-line arguments.</param>
         public static void Main(string[] args)
         {
+            // parse validation type
+            string validationType = "default"; // Default value
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                var argument = args[i].ToLower();
+
+                if (argument.StartsWith("--validation-rules="))
+                {
+                    validationType = argument.Split('=')[1];
+                }
+                if (argument == "-v" && !string.IsNullOrEmpty(args[i + 1]))
+                {
+                    validationType = args[i + 1].ToLower();
+                }
+            }
+            Console.WriteLine(validationType);
+            if (validationType == "custom")
+            {
+                Console.WriteLine("Using custom validation rules.");
+            }
+            else
+            {
+                Console.WriteLine("Using default validation rules.");
+            }
+
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
