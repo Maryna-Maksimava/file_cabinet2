@@ -4,5 +4,90 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetRecord">
+            <summary>
+            Represents a record in the File Cabinet application.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
+            <summary>
+            Gets or sets the unique identifier for the record.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
+            <summary>
+            Gets or sets the first name of the person.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
+            <summary>
+            Gets or sets the last name of the person.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+            <summary>
+            Gets or sets the date of birth of the person.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Age">
+            <summary>
+            Gets or sets the age of the person.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Salary">
+            <summary>
+            Gets or sets the salary of the person.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Gender">
+            <summary>
+            Gets or sets the gender of the person.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.Program">
+            <summary>
+            Entry point of the File Cabinet Application.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Program.commands">
+            <summary>
+            List of available commands and their actions.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Program.helpMessages">
+            <summary>
+            Help messages for available commands.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Program.Main(System.String[])">
+            <summary>
+            Main entry point of the application.
+            </summary>
+            <param name="args">Command-line arguments.</param>
+        </member>
+        <member name="M:FileCabinetApp.Program.PrintMissedCommandInfo(System.String)">
+            <summary>
+            Displays message when an unknown command is entered.
+            </summary>
+            <param name="command">The unknown command.</param>
+        </member>
+        <member name="M:FileCabinetApp.Program.PrintHelp(System.String)">
+            <summary>
+            Displays available commands or provides help for a specific command.
+            </summary>
+            <param name="parameters">Command to get help for.</param>
+        </member>
+        <member name="M:FileCabinetApp.Program.Exit(System.String)">
+            <summary>
+            Exits the application.
+            </summary>
+            <param name="parameters">Unused parameter.</param>
+        </member>
+        <member name="M:FileCabinetApp.Program.Stat(System.String)">
+            <summary>
+            Displays statistics about stored records.
+            </summary>
+            <param name="parameters">Unused parameter.</param>
+        </member>
     </members>
 </doc>
