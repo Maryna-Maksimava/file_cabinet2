@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
 {
-    public class FileCabinetService
+    public class FileCabinetService : IFileCabinetService
     {
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -18,7 +18,8 @@ namespace FileCabinetApp
 
         private IRecordValidator validator;
 
-        public FileCabinetService(IRecordValidator validator) {
+        public FileCabinetService(IRecordValidator validator)
+        {
             this.validator = validator;
         }
 
