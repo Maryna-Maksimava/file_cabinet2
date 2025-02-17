@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Represents a record in the File Cabinet application.
     /// </summary>
-    public class FileCabinetRecords
+    public class FileCabinetRecord
     {
         /// <summary>
         /// Gets or sets the unique identifier for the record.
