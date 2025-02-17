@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using System.Xml.Linq;
 
 namespace FileCabinetApp
 {
@@ -152,7 +154,7 @@ namespace FileCabinetApp
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
-        private static void Create(string parameters)
+        private static RecordParameters ReadRecordParameters()
         {
             string? fname = string.Empty;
             string? lname = string.Empty;
@@ -250,8 +252,15 @@ namespace FileCabinetApp
                 }
             }
 
-            int id = fileCabinetService.CreateRecord(fname, lname, dateOfBirth, age, salary, gender);
+            return new RecordParameters(fname, lname, dateOfBirth, age, salary, gender);
+        }
 
+
+        private static void Create(string parameters)
+        {
+            RecordParameters recParams = ReadRecordParameters();
+
+            int id = fileCabinetService.CreateRecord(recParams);
             Console.WriteLine($"record id = {id}");
         }
 
@@ -286,105 +295,11 @@ namespace FileCabinetApp
                 Console.WriteLine("Please enter a valid positive record ID.");
             }
 
-            string fname = string.Empty;
-            string lname = string.Empty;
-            DateTime dateOfBirth = DateTime.MinValue;
-            short age = 0;
-            decimal salary = 0;
-            char gender = ' ';
-
-            //Fname
-            while (true)
-            {
-                Console.WriteLine("New first name...");
-                fname = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(fname) || fname.Length < 2 || fname.Length > 60)
-                {
-                    Console.WriteLine("First name must be between 2 and 60 characters and cannot be empty or just spaces.");
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            // Lname
-            while (true)
-            {
-                Console.WriteLine("New last name...");
-                lname = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(lname) || lname.Length < 2 || lname.Length > 60)
-                {
-                    Console.WriteLine("Last name must be between 2 and 60 characters and cannot be empty or just spaces.");
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            // DOB
-            while (true)
-            {
-                Console.WriteLine("New date of birth (mm.dd.yyyy)...");
-                string date = Console.ReadLine();
-                if (DateTime.TryParse(date, out dateOfBirth) && dateOfBirth >= new DateTime(1950, 1, 1) && dateOfBirth <= DateTime.Today)
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid date. Please enter a valid date between 01-Jan-1950 and today.");
-                }
-            }
-
-            // age
-            while (true)
-            {
-                Console.WriteLine("New age...");
-                if (short.TryParse(Console.ReadLine(), out age) && age > 0 && age <= 130)
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Age must be a positive value between 1 and 130.");
-                }
-            }
-
-            // salary
-            while (true)
-            {
-                Console.WriteLine("New salary...");
-                if (decimal.TryParse(Console.ReadLine(), out salary) && salary >= 0)
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Salary must be a non-negative number.");
-                }
-            }
-
-            // gender
-            while (true)
-            {
-                Console.WriteLine("New gender (M/F/O(for Other)...");
-                string genderInput = Console.ReadLine();
-                if (genderInput.Length == 1 && (genderInput[0] == 'M' || genderInput[0] == 'F' || genderInput[0] == 'O'))
-                {
-                    gender = genderInput[0];
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Gender must be 'M' or 'F' or 'O'.");
-                }
-            }
+            RecordParameters recParams = ReadRecordParameters();
 
             try
             {
-                fileCabinetService.EditRecord(id, fname, lname, dateOfBirth, age, salary, gender);
+                fileCabinetService.EditRecord(id, recParams);
             }
             catch (ArgumentException ex)
             {

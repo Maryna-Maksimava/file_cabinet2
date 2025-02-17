@@ -14,19 +14,22 @@ namespace FileCabinetApp
 
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, short age, decimal salary, char gender)
+        public int CreateRecord(RecordParameters parameters)
         {
-            if (string.IsNullOrWhiteSpace(firstName) || firstName.Length < 2 || firstName.Length > 60)
+            if (string.IsNullOrWhiteSpace(parameters.FirstName) ||
+                parameters.FirstName.Length < 2 ||
+                parameters.FirstName.Length > 60)
             {
                 throw new ArgumentException("Invalid first name.");
             }
-
-            if (string.IsNullOrWhiteSpace(lastName) || lastName.Length < 2 || lastName.Length > 60)
+            if (string.IsNullOrWhiteSpace(parameters.LastName) ||
+                parameters.LastName.Length < 2 ||
+                parameters.LastName.Length > 60)
             {
                 throw new ArgumentException("Invalid last name.");
             }
-
-            if (dateOfBirth < new DateTime(1950, 1, 1) || dateOfBirth > DateTime.Now)
+            if (parameters.DateOfBirth < new DateTime(1950, 1, 1) ||
+                parameters.DateOfBirth > DateTime.Now)
             {
                 throw new ArgumentException("Invalid date of birth.");
             }
@@ -34,33 +37,35 @@ namespace FileCabinetApp
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = dateOfBirth,
-                Salary = salary,
-                Age = age,
-                Gender = gender,
+                FirstName = parameters.FirstName,
+                LastName = parameters.LastName,
+                DateOfBirth = parameters.DateOfBirth,
+                Salary = parameters.Salary,
+                Age = parameters.Age,
+                Gender = parameters.Gender,
             };
 
             this.list.Add(record);
 
-            if (!this.firstNameDictionary.ContainsKey(firstName.ToLower()))
+            var firstNameKey = parameters.FirstName.ToLower();
+            if (!this.firstNameDictionary.ContainsKey(firstNameKey))
             {
-                this.firstNameDictionary[firstName.ToLower()] = new List<FileCabinetRecord>();
+                this.firstNameDictionary[firstNameKey] = new List<FileCabinetRecord>();
             }
-            this.firstNameDictionary[firstName.ToLower()].Add(record);
+            this.firstNameDictionary[firstNameKey].Add(record);
 
-            if (!this.lastNameDictionary.ContainsKey(lastName.ToLower()))
+            var lastNameKey = parameters.LastName.ToLower();
+            if (!this.lastNameDictionary.ContainsKey(lastNameKey))
             {
-                this.lastNameDictionary[lastName.ToLower()] = new List<FileCabinetRecord>();
+                this.lastNameDictionary[lastNameKey] = new List<FileCabinetRecord>();
             }
-            this.lastNameDictionary[lastName.ToLower()].Add(record);
+            this.lastNameDictionary[lastNameKey].Add(record);
 
-            if (!this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            if (!this.dateOfBirthDictionary.ContainsKey(parameters.DateOfBirth))
             {
-                this.dateOfBirthDictionary[dateOfBirth] = new List<FileCabinetRecord>();
+                this.dateOfBirthDictionary[parameters.DateOfBirth] = new List<FileCabinetRecord>();
             }
-            this.dateOfBirthDictionary[dateOfBirth].Add(record);
+            this.dateOfBirthDictionary[parameters.DateOfBirth].Add(record);
 
             return record.Id;
         }
@@ -91,7 +96,7 @@ namespace FileCabinetApp
         }
 
 
-        public void EditRecord(int id, string firstName, string lastName, DateTime dateOfBirth, short age, decimal salary, char gender)
+        public void EditRecord(int id, RecordParameters parameters)
         {
             var record = this.list.FirstOrDefault(r => r.Id == id);
             if (record == null)
@@ -103,24 +108,24 @@ namespace FileCabinetApp
             this.lastNameDictionary[record.LastName.ToLower()].Remove(record);
             this.dateOfBirthDictionary[record.DateOfBirth].Remove(record);
 
-            record.FirstName = firstName;
-            record.LastName = lastName;
-            record.DateOfBirth = dateOfBirth;
-            record.Salary = salary;
-            record.Age = age;
-            record.Gender = gender;
+            record.FirstName = parameters.FirstName;
+            record.LastName = parameters.LastName;
+            record.DateOfBirth = parameters.DateOfBirth;
+            record.Salary = parameters.Salary;
+            record.Age = parameters.Age;
+            record.Gender = parameters.Gender;
 
-            if (!this.firstNameDictionary.ContainsKey(firstName.ToLower()))
-                this.firstNameDictionary[firstName.ToLower()] = new List<FileCabinetRecord>();
-            this.firstNameDictionary[firstName.ToLower()].Add(record);
+            if (!this.firstNameDictionary.ContainsKey(parameters.FirstName.ToLower()))
+                this.firstNameDictionary[parameters.FirstName.ToLower()] = new List<FileCabinetRecord>();
+            this.firstNameDictionary[parameters.FirstName.ToLower()].Add(record);
 
-            if (!this.lastNameDictionary.ContainsKey(lastName.ToLower()))
-                this.lastNameDictionary[lastName.ToLower()] = new List<FileCabinetRecord>();
-            this.lastNameDictionary[lastName.ToLower()].Add(record);
+            if (!this.lastNameDictionary.ContainsKey(parameters.LastName.ToLower()))
+                this.lastNameDictionary[parameters.LastName.ToLower()] = new List<FileCabinetRecord>();
+            this.lastNameDictionary[parameters.LastName.ToLower()].Add(record);
 
-            if (!this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
-                this.dateOfBirthDictionary[dateOfBirth] = new List<FileCabinetRecord>();
-            this.dateOfBirthDictionary[dateOfBirth].Add(record);
+            if (!this.dateOfBirthDictionary.ContainsKey(parameters.DateOfBirth))
+                this.dateOfBirthDictionary[parameters.DateOfBirth] = new List<FileCabinetRecord>();
+            this.dateOfBirthDictionary[parameters.DateOfBirth].Add(record);
         }
 
         public FileCabinetRecord[] FindByFirstName(string firstName)
