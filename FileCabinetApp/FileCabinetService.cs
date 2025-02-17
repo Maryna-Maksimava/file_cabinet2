@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FileCabinetApp
 {
-    public abstract class FileCabinetService
+    public class FileCabinetService
     {
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();

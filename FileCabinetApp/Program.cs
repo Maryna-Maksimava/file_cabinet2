@@ -24,7 +24,7 @@ namespace FileCabinetApp
 
         static Program()
         {
-            fileCabinetService = new FileCabinetDefaultService();
+            fileCabinetService = new FileCabinetService(new DefaultValidator());
         }
 
         /// <summary>
@@ -81,12 +81,12 @@ namespace FileCabinetApp
             if (validationType == "custom")
             {
                 Console.WriteLine("Using custom validation rules.");
-                fileCabinetService = new FileCabinetCustomService();
+                fileCabinetService = new FileCabinetService(new CustomValidator());
             }
             else
             {
                 Console.WriteLine("Using default validation rules.");
-                fileCabinetService = new FileCabinetDefaultService();
+                fileCabinetService = new FileCabinetService(new DefaultValidator());
             }
 
 
