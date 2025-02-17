@@ -12,7 +12,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Entry point of the File Cabinet Application.
     /// </summary>
-    public static class Program
+    public class Program
     {
         private const string DeveloperName = "Maryna Maksimava";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
@@ -183,103 +183,189 @@ namespace FileCabinetApp
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
+        }
+
+        private static Tuple<bool, string, string> stringConverter(string input) {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return Tuple.Create(false, "Empty string", "");
+            }
+
+            return Tuple.Create(true, string.Empty, input);
+        }
+
+        private static Tuple<bool, string> firstNameValidator(string input)
+        {
+            if (input.Length < 2 )
+            {
+                return Tuple.Create(false, "First name too short. Minimum 2 symbols");
+            }
+            if (input.Length > 60)
+            {
+                return Tuple.Create(false, "First name too long. Maximum 60 symbols");
+            }
+
+            return Tuple.Create(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> lastNameValidator(string input)
+        {
+            if (input.Length < 2)
+            {
+                return Tuple.Create(false, "Last name too short. Minimum 2 symbols");
+            }
+            if (input.Length > 60)
+            {
+                return Tuple.Create(false, "Last name too long. Maximum 60 symbols");
+            }
+
+            return Tuple.Create(true, string.Empty);
+        }
+
+        private static Tuple<bool, string, DateTime> dateConverter(string input)
+        {
+            if (DateTime.TryParse(input, out DateTime result))
+            {
+                return Tuple.Create(true, string.Empty, result);
+            }
+            return Tuple.Create(false, "Invalid date format. Use mm.dd.yyyy", DateTime.MinValue);
+        }
+
+        private static Tuple<bool, string> dateValidator(DateTime input)
+        {
+            if (input < new DateTime(1900, 1, 1))
+            {
+                return Tuple.Create(false, "Date must be after 01.01.1900");
+            }
+            if (input > DateTime.Today)
+            {
+                return Tuple.Create(false, "Date cannot be in the future");
+            }
+            return Tuple.Create(true, string.Empty);
+        }
+
+        private static Tuple<bool, string, decimal> salaryConverter(string input)
+        {
+            if (decimal.TryParse(input, out decimal result))
+            {
+                return Tuple.Create(true, string.Empty, result);
+            }
+            return Tuple.Create(false, "Please enter a valid number", 0m);
+        }
+
+        private static Tuple<bool, string> salaryValidator(decimal input)
+        {
+            if (input < 0)
+            {
+                return Tuple.Create(false, "Salary must be a non-negative number");
+            }
+            return Tuple.Create(true, string.Empty);
+        }
+
+        private static Tuple<bool, string, short> ageConverter(string input)
+        {
+            if (short.TryParse(input, out short result))
+            {
+                return Tuple.Create(true, string.Empty, result);
+            }
+            return Tuple.Create(false, "Please enter a valid number", (short)0);
+        }
+
+        private static Tuple<bool, string> ageValidator(short input)
+        {
+            if (input <= 0)
+            {
+                return Tuple.Create(false, "Age must be positive");
+            }
+            if (input > 130)
+            {
+                return Tuple.Create(false, "Age must be less than or equal to 130");
+            }
+            return Tuple.Create(true, string.Empty);
+        }
+
+        private static Tuple<bool, string, char> genderConverter(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input) || input.Length != 1)
+            {
+                return Tuple.Create(false, "Please enter a single character", ' ');
+            }
+            char gender = char.ToUpper(input[0]);
+            return Tuple.Create(true, string.Empty, gender);
+        }
+
+        private static Tuple<bool, string> genderValidator(char input)
+        {
+            char gender = char.ToUpper(input);
+            if (gender != 'M' && gender != 'F' && gender != 'O')
+            {
+                return Tuple.Create(false, "Gender must be 'M' or 'F' or 'O'");
+            }
+            return Tuple.Create(true, string.Empty);
+        }
+
         private static RecordParameters ReadRecordParameters()
         {
-            string? fname = string.Empty;
-            string? lname = string.Empty;
+            string fname = string.Empty;
+            string lname = string.Empty;
             DateTime dateOfBirth = DateTime.MinValue;
             short age = 0;
             decimal salary = 0;
             char gender = ' ';
 
             // Fname check
-            while (true)
-            {
-                Console.WriteLine("First name...");
-                fname = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(fname) || fname.Length < 2 || fname.Length > 60)
-                {
-                    Console.WriteLine("First name must be between 2 and 60 characters and cannot be empty or just spaces.");
-                }
-                else
-                {
-                    break;
-                }
-            }
+            Console.WriteLine("First name...");
+            fname = ReadInput(stringConverter, firstNameValidator);
 
             // Lname check
-            while (true)
-            {
-                Console.WriteLine("Last name...");
-                lname = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(lname) || lname.Length < 2 || lname.Length > 60)
-                {
-                    Console.WriteLine("Last name must be between 2 and 60 characters and cannot be empty or just spaces.");
-                }
-                else
-                {
-                    break;
-                }
-            }
+
+            Console.WriteLine("Last name...");
+            lname = ReadInput(stringConverter, lastNameValidator);
 
             // DOB check
-            while (true)
-            {
-                Console.WriteLine("Date of birth (mm.dd.yyyy)...");
-                string date = Console.ReadLine();
-                if (DateTime.TryParse(date, out dateOfBirth) && dateOfBirth >= new DateTime(1900, 1, 1) && dateOfBirth <= DateTime.Today)
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid date. Please enter a valid date between 01-Jan-1900 and today.");
-                }
-            }
+            Console.WriteLine("Date of birth (mm.dd.yyyy)...");
+            dateOfBirth = ReadInput(dateConverter, dateValidator);
+
+
 
             // age check
-            while (true)
-            {
-                Console.WriteLine("Age...");
-                if (short.TryParse(Console.ReadLine(), out age) && age > 0 && age <= 130)
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Age must be a positive value between 1 and 130.");
-                }
-            }
+            Console.WriteLine("Age...");
+            age = ReadInput(ageConverter, ageValidator);
 
             // salary check
-            while (true)
-            {
-                Console.WriteLine("Salary...");
-                if (decimal.TryParse(Console.ReadLine(), out salary) && salary >= 0)
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Salary must be a non-negative number.");
-                }
-            }
+            Console.WriteLine("Salary...");
+            salary = ReadInput(salaryConverter, salaryValidator);
 
             // gender check
-            while (true)
-            {
-                Console.WriteLine("Gender (M/F/O(for Other)...");
-                string? genderInput = Console.ReadLine();
-                if (genderInput.Length == 1 && (genderInput[0] == 'M' || genderInput[0] == 'F' || genderInput[0] == 'O'))
-                {
-                    gender = genderInput[0];
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Gender must be 'M' or 'F' or 'O'.");
-                }
-            }
+            Console.WriteLine("Gender (M/F/O(for Other)...");
+            gender = ReadInput(genderConverter, genderValidator);
 
             return new RecordParameters(fname, lname, dateOfBirth, age, salary, gender);
         }
