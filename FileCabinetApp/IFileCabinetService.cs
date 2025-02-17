@@ -11,6 +11,9 @@ namespace FileCabinetApp
         ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName);
         ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName);
         ReadOnlyCollection<FileCabinetRecord> GetRecords();
+
+        FileCabinetServiceSnapshot MakeSnapshot();
+
         int GetStat();
     }
 }

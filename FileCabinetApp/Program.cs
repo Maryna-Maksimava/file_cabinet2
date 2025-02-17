@@ -39,6 +39,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("export", Export),
         };
 
         /// <summary>
@@ -53,6 +54,7 @@ namespace FileCabinetApp
             new string[] { "list", "shows records", "The 'list' command displays all records." },
             new string[] { "edit", "edits a record", "The 'edit' command modifies an existing record." },
             new string[] { "find", "finds a record", "The 'find' command searches for a record." },
+            new string[] { "export", "export records to CSV", "The 'export' command exports records to CSV"},
         };
 
         /// <summary>
@@ -468,6 +470,38 @@ namespace FileCabinetApp
                     Console.WriteLine($"Unknown property '{propertyName}'. Use: firstname, lastname, dateofbirth.");
                     break;
             }
+        }
+
+        private static void Export(string parameters)
+        {
+            FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
+
+            var parts = parameters.Split(' ', 2);
+            if (parts.Length != 2)
+            {
+                Console.WriteLine("export csv filename.csv");
+                return;
+            }
+
+            var type = parts[0].ToLower();
+            var fileName = parts[1];
+
+            StreamWriter? writer = null;
+
+            try
+            {
+                writer = new StreamWriter(fileName);
+                snapshot.SaveToCsv(writer);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            if (writer != null) {
+                writer.Close();
+            }
+           
         }
 
     }

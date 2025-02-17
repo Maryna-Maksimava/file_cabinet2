@@ -90,6 +90,11 @@ namespace FileCabinetApp
             }
         }
 
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            return new FileCabinetServiceSnapshot(this.list);
+        }
+
 
         public void EditRecord(int id, RecordParameters parameters)
         {
@@ -145,5 +150,7 @@ namespace FileCabinetApp
                 ? new ReadOnlyCollection<FileCabinetRecord>(records)
                 : new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
         }
+
+
     }
 }
