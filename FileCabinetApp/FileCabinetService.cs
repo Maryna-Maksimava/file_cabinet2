@@ -14,12 +14,16 @@ namespace FileCabinetApp
 
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-        protected abstract IRecordValidator CreateValidator();
+        private IRecordValidator validator;
+
+        public FileCabinetService(IRecordValidator validator) {
+            this.validator = validator;
+        }
 
 
         public int CreateRecord(RecordParameters parameters)
         {
-            this.CreateValidator().ValidateParameters(parameters);
+            this.validator.ValidateParameters(parameters);
 
             var record = new FileCabinetRecord
             {
@@ -85,7 +89,7 @@ namespace FileCabinetApp
 
         public void EditRecord(int id, RecordParameters parameters)
         {
-            this.CreateValidator().ValidateParameters(parameters);
+            this.validator.ValidateParameters(parameters);
 
             var record = this.list.FirstOrDefault(r => r.Id == id);
             if (record == null)
