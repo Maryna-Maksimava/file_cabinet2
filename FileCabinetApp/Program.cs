@@ -479,7 +479,7 @@ namespace FileCabinetApp
             var parts = parameters.Split(' ', 2);
             if (parts.Length != 2)
             {
-                Console.WriteLine("export csv filename.csv");
+                Console.WriteLine("export csv[or xml] filename.csv");
                 return;
             }
 
@@ -491,7 +491,16 @@ namespace FileCabinetApp
             try
             {
                 writer = new StreamWriter(fileName);
-                snapshot.SaveToCsv(writer);
+
+                if (type == "csv") {
+                    snapshot.SaveToCsv(writer);
+                }
+                else if (type == "xml") {
+                    snapshot.SaveToXml(writer);
+                } else {
+                    Console.WriteLine("Unsupported file type");
+                }
+                
             }
             catch (ArgumentException ex)
             {
@@ -501,8 +510,6 @@ namespace FileCabinetApp
             if (writer != null) {
                 writer.Close();
             }
-           
         }
-
     }
 }

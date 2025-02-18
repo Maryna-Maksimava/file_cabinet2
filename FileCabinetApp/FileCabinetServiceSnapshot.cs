@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace FileCabinetApp
 {
@@ -31,16 +32,20 @@ namespace FileCabinetApp
             {
                 csvWriter.Write(record);
             }
+
+            csvWriter.Close();
         }
 
         public void SaveToXml(StreamWriter writer)
         {
-           // var xmlWriter = new FileCabinetRecordXmlWriter(writer);
+            var xmlWriter = new FileCabinetRecordXmlWriter(writer);
 
             foreach (var record in this.records)
             {
-            //    xmlWriter.Write(record);
+                xmlWriter.Write(record);
             }
+
+            xmlWriter.Close();
         }
     }
 }

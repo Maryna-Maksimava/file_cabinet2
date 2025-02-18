@@ -20,5 +20,9 @@ namespace FileCabinetApp
             this.writer.WriteLine(
                 $"{record.Id},{record.FirstName},{record.LastName},{record.DateOfBirth:MM/dd/yyyy},{record.Age},{record.Salary},{record.Gender}");
         }
+
+        public void Close()
+        {
+        }
     }
 }
