@@ -1,15 +1,11 @@
-// <copyright file="FileCabinetRecord.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FileCabinetApp
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     /// <summary>
     /// Represents a record in the File Cabinet application.
     /// </summary>
@@ -23,12 +19,12 @@ namespace FileCabinetApp
         /// <summary>
         /// Gets or sets the first name of the person.
         /// </summary>
-        public string? FirstName { get; set; }
+        public string FirstName { get; set; }
 
         /// <summary>
         /// Gets or sets the last name of the person.
         /// </summary>
-        public string? LastName { get; set; }
+        public string LastName { get; set; }
 
         /// <summary>
         /// Gets or sets the date of birth of the person.

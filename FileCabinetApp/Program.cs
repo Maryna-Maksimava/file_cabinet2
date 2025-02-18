@@ -1,31 +1,47 @@
-﻿using System;
-using System.Globalization;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Xml.Linq;
+﻿// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace FileCabinetApp
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Xml.Linq;
+
     /// <summary>
     /// Entry point of the File Cabinet Application.
     /// </summary>
     public class Program
     {
+        /// <summary>
+        /// The developer name.
+        /// </summary>
         private const string DeveloperName = "Maryna Maksimava";
-        private const string HintMessage = "Enter your command, or enter 'help' to get help.";
-        private const int CommandHelpIndex = 0;
-        private const int DescriptionHelpIndex = 1;
-        private const int ExplanationHelpIndex = 2;
-        private static IFileCabinetService? fileCabinetService;
-        private static bool isRunning = true;
 
-        static Program()
-        {
-            fileCabinetService = new FileCabinetService(new DefaultValidator());
-        }
+        /// <summary>
+        /// The hint message.
+        /// </summary>
+        private const string HintMessage = "Enter your command, or enter 'help' to get help.";
+
+        /// <summary>
+        /// The command help index.
+        /// </summary>
+        private const int CommandHelpIndex = 0;
+
+        /// <summary>
+        /// The description help index.
+        /// </summary>
+        private const int DescriptionHelpIndex = 1;
+
+        /// <summary>
+        /// The explanation help index.
+        /// </summary>
+        private const int ExplanationHelpIndex = 2;
 
         /// <summary>
         /// List of available commands and their actions.
@@ -54,8 +70,20 @@ namespace FileCabinetApp
             new string[] { "list", "shows records", "The 'list' command displays all records." },
             new string[] { "edit", "edits a record", "The 'edit' command modifies an existing record." },
             new string[] { "find", "finds a record", "The 'find' command searches for a record." },
-            new string[] { "export", "export records to CSV", "The 'export' command exports records to CSV"},
+            new string[] { "export", "export records to CSV", "The 'export' command exports records to CSV" },
         };
+
+        private static IFileCabinetService? fileCabinetService;
+        private static bool isRunning = true;
+
+        /// <summary>
+        /// Initializes static members of the <see cref="Program"/> class.
+        /// Initializes a new instance of the <see cref="Program"/> class.
+        /// </summary>
+        static Program()
+        {
+            fileCabinetService = new FileCabinetService(new DefaultValidator());
+        }
 
         /// <summary>
         /// Main entry point of the application.
@@ -74,12 +102,13 @@ namespace FileCabinetApp
                 {
                     validationType = argument.Split('=')[1];
                 }
+
                 if (argument == "-v" && !string.IsNullOrEmpty(args[i + 1]))
                 {
                     validationType = args[i + 1].ToLower();
                 }
             }
-            
+
             if (validationType == "custom")
             {
                 Console.WriteLine("Using custom validation rules.");
@@ -90,7 +119,6 @@ namespace FileCabinetApp
                 Console.WriteLine("Using default validation rules.");
                 fileCabinetService = new FileCabinetService(new DefaultValidator());
             }
-
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
@@ -123,7 +151,6 @@ namespace FileCabinetApp
             }
             while (isRunning);
         }
-
 
         /// <summary>
         /// Displays message when an unknown command is entered.
@@ -185,6 +212,12 @@ namespace FileCabinetApp
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
+        /// <summary>
+        /// Reads the input.
+        /// </summary>
+        /// <param name="converter">The converter.</param>
+        /// <param name="validator">The validator.</param>
+        /// <returns>A T.</returns>
         private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
         {
             do
@@ -214,21 +247,33 @@ namespace FileCabinetApp
             while (true);
         }
 
-        private static Tuple<bool, string, string> stringConverter(string input) {
+        /// <summary>
+        /// strings the converter.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A Tuple.</returns>
+        private static Tuple<bool, string, string> StringConverter(string input)
+        {
             if (string.IsNullOrWhiteSpace(input))
             {
-                return Tuple.Create(false, "Empty string", "");
+                return Tuple.Create(false, "Empty string", string.Empty);
             }
 
             return Tuple.Create(true, string.Empty, input);
         }
 
-        private static Tuple<bool, string> firstNameValidator(string input)
+        /// <summary>
+        /// firsts the name validator.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A Tuple.</returns>
+        private static Tuple<bool, string> FirstNameValidator(string input)
         {
-            if (input.Length < 2 )
+            if (input.Length < 2)
             {
                 return Tuple.Create(false, "First name too short. Minimum 2 symbols");
             }
+
             if (input.Length > 60)
             {
                 return Tuple.Create(false, "First name too long. Maximum 60 symbols");
@@ -237,12 +282,18 @@ namespace FileCabinetApp
             return Tuple.Create(true, string.Empty);
         }
 
-        private static Tuple<bool, string> lastNameValidator(string input)
+        /// <summary>
+        /// lasts the name validator.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A Tuple.</returns>
+        private static Tuple<bool, string> LastNameValidator(string input)
         {
             if (input.Length < 2)
             {
                 return Tuple.Create(false, "Last name too short. Minimum 2 symbols");
             }
+
             if (input.Length > 60)
             {
                 return Tuple.Create(false, "Last name too long. Maximum 60 symbols");
@@ -251,88 +302,142 @@ namespace FileCabinetApp
             return Tuple.Create(true, string.Empty);
         }
 
-        private static Tuple<bool, string, DateTime> dateConverter(string input)
+        /// <summary>
+        /// dates the converter.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A Tuple.</returns>
+        private static Tuple<bool, string, DateTime> DateConverter(string input)
         {
             if (DateTime.TryParse(input, out DateTime result))
             {
                 return Tuple.Create(true, string.Empty, result);
             }
+
             return Tuple.Create(false, "Invalid date format. Use mm.dd.yyyy", DateTime.MinValue);
         }
 
-        private static Tuple<bool, string> dateValidator(DateTime input)
+        /// <summary>
+        /// dates the validator.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A Tuple.</returns>
+        private static Tuple<bool, string> DateValidator(DateTime input)
         {
             if (input < new DateTime(1900, 1, 1))
             {
                 return Tuple.Create(false, "Date must be after 01.01.1900");
             }
+
             if (input > DateTime.Today)
             {
                 return Tuple.Create(false, "Date cannot be in the future");
             }
+
             return Tuple.Create(true, string.Empty);
         }
 
-        private static Tuple<bool, string, decimal> salaryConverter(string input)
+        /// <summary>
+        /// salaries the converter.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A Tuple.</returns>
+        private static Tuple<bool, string, decimal> SalaryConverter(string input)
         {
             if (decimal.TryParse(input, out decimal result))
             {
                 return Tuple.Create(true, string.Empty, result);
             }
+
             return Tuple.Create(false, "Please enter a valid number", 0m);
         }
 
-        private static Tuple<bool, string> salaryValidator(decimal input)
+        /// <summary>
+        /// salaries the validator.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A Tuple.</returns>
+        private static Tuple<bool, string> SalaryValidator(decimal input)
         {
             if (input < 0)
             {
                 return Tuple.Create(false, "Salary must be a non-negative number");
             }
+
             return Tuple.Create(true, string.Empty);
         }
 
-        private static Tuple<bool, string, short> ageConverter(string input)
+        /// <summary>
+        /// ages the converter.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A Tuple.</returns>
+        private static Tuple<bool, string, short> AgeConverter(string input)
         {
             if (short.TryParse(input, out short result))
             {
                 return Tuple.Create(true, string.Empty, result);
             }
+
             return Tuple.Create(false, "Please enter a valid number", (short)0);
         }
 
-        private static Tuple<bool, string> ageValidator(short input)
+        /// <summary>
+        /// Validates age.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A Tuple.</returns>
+        private static Tuple<bool, string> AgeValidator(short input)
         {
             if (input <= 0)
             {
                 return Tuple.Create(false, "Age must be positive");
             }
+
             if (input > 130)
             {
                 return Tuple.Create(false, "Age must be less than or equal to 130");
             }
+
             return Tuple.Create(true, string.Empty);
         }
 
-        private static Tuple<bool, string, char> genderConverter(string input)
+        /// <summary>
+        /// validates gender.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A Tuple.</returns>
+        private static Tuple<bool, string, char> GenderConverter(string input)
         {
             if (string.IsNullOrWhiteSpace(input) || input.Length != 1)
             {
                 return Tuple.Create(false, "Please enter a single character", ' ');
             }
+
             char gender = char.ToUpper(input[0]);
             return Tuple.Create(true, string.Empty, gender);
         }
 
-        private static Tuple<bool, string> genderValidator(char input)
+        /// <summary>
+        /// validates gender.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A Tuple.</returns>
+        private static Tuple<bool, string> GenderValidator(char input)
         {
             char gender = char.ToUpper(input);
             if (gender != 'M' && gender != 'F' && gender != 'O')
             {
                 return Tuple.Create(false, "Gender must be 'M' or 'F' or 'O'");
             }
+
             return Tuple.Create(true, string.Empty);
         }
 
+        /// <summary>
+        /// Reads the record parameters.
+        /// </summary>
+        /// <returns>A RecordParameters.</returns>
         private static RecordParameters ReadRecordParameters()
         {
             string fname = string.Empty;
@@ -344,35 +449,36 @@ namespace FileCabinetApp
 
             // Fname check
             Console.WriteLine("First name...");
-            fname = ReadInput(stringConverter, firstNameValidator);
+            fname = ReadInput(StringConverter, FirstNameValidator);
 
             // Lname check
 
             Console.WriteLine("Last name...");
-            lname = ReadInput(stringConverter, lastNameValidator);
+            lname = ReadInput(StringConverter, LastNameValidator);
 
             // DOB check
             Console.WriteLine("Date of birth (mm.dd.yyyy)...");
-            dateOfBirth = ReadInput(dateConverter, dateValidator);
-
-
+            dateOfBirth = ReadInput(DateConverter, DateValidator);
 
             // age check
             Console.WriteLine("Age...");
-            age = ReadInput(ageConverter, ageValidator);
+            age = ReadInput(AgeConverter, AgeValidator);
 
             // salary check
             Console.WriteLine("Salary...");
-            salary = ReadInput(salaryConverter, salaryValidator);
+            salary = ReadInput(SalaryConverter, SalaryValidator);
 
             // gender check
             Console.WriteLine("Gender (M/F/O(for Other)...");
-            gender = ReadInput(genderConverter, genderValidator);
+            gender = ReadInput(GenderConverter, GenderValidator);
 
             return new RecordParameters(fname, lname, dateOfBirth, age, salary, gender);
         }
 
-
+        /// <summary>
+        /// Creates the record.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
         private static void Create(string parameters)
         {
             RecordParameters recParams = ReadRecordParameters();
@@ -381,7 +487,10 @@ namespace FileCabinetApp
             Console.WriteLine($"record id = {id}");
         }
 
-
+        /// <summary>
+        /// Lists the records.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
         private static void List(string parameters)
         {
             var records = fileCabinetService.GetRecords();
@@ -397,6 +506,11 @@ namespace FileCabinetApp
                 Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}, Age: {record.Age}, Salary: {record.Salary:C}, Gender: {record.Gender}");
             }
         }
+
+        /// <summary>
+        /// Edits the record.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
         private static void Edit(string parameters)
         {
             // id
@@ -424,6 +538,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Finds the record.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
         private static void Find(string parameters)
         {
             if (string.IsNullOrWhiteSpace(parameters))
@@ -464,6 +582,7 @@ namespace FileCabinetApp
                     {
                         Console.WriteLine("Invalid date format. Use YYYY-MM-DD.");
                     }
+
                     break;
 
                 default:
@@ -472,6 +591,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Exports the record.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
         private static void Export(string parameters)
         {
             FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
@@ -492,22 +615,26 @@ namespace FileCabinetApp
             {
                 writer = new StreamWriter(fileName);
 
-                if (type == "csv") {
+                if (type == "csv")
+                {
                     snapshot.SaveToCsv(writer);
                 }
-                else if (type == "xml") {
+                else if (type == "xml")
+                {
                     snapshot.SaveToXml(writer);
-                } else {
+                }
+                else
+                {
                     Console.WriteLine("Unsupported file type");
                 }
-                
             }
             catch (ArgumentException ex)
             {
                 Console.WriteLine(ex.Message);
             }
 
-            if (writer != null) {
+            if (writer != null)
+            {
                 writer.Close();
             }
         }

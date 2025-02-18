@@ -1,17 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+﻿// <copyright file="FileCabinetRecordXmlWriter.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace FileCabinetApp
 {
-    public class FileCabinetRecordXmlWriter
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Xml;
+
+    /// <summary>
+    /// Provides functionality to write FileCabinetRecord objects to XML format.
+    /// </summary>
+    internal class FileCabinetRecordXmlWriter
     {
         private readonly TextWriter writer;
         private readonly XmlWriter xmlWriter;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecordXmlWriter"/> class.
+        /// </summary>
+        /// <param name="writer">The text writer to which the XML content will be written.</param>
         public FileCabinetRecordXmlWriter(TextWriter writer)
         {
             this.writer = writer;
@@ -21,6 +32,10 @@ namespace FileCabinetApp
             this.xmlWriter.WriteStartElement("records");
         }
 
+        /// <summary>
+        /// Writes a single record to the XML document.
+        /// </summary>
+        /// <param name="record">The record to write to XML format.</param>
         public void Write(FileCabinetRecord record)
         {
             this.xmlWriter.WriteStartElement("record");
@@ -39,6 +54,9 @@ namespace FileCabinetApp
             this.xmlWriter.WriteEndElement(); 
         }
 
+        /// <summary>
+        /// Finalizes the XML document and closes the XML writer.
+        /// </summary>
         public void Close()
         {
             this.xmlWriter.WriteEndElement();
