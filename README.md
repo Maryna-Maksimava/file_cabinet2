@@ -1,2 +1,2 @@
-# file_cabinet2
-New fc because I failed with the stylecop
+# file_cabinet
+Task on creating a console app for storing and retrieving information about employees.
